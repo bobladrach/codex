@@ -1,0 +1,5 @@
+﻿# No venvs or caches inside this umbrella
+.venv/
+__pycache__/
+*.pyc
+*.log
