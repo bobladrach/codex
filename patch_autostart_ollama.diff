@@ -1,0 +1,26 @@
+*** Begin Patch
+*** Update File: ariel_server.py
+@@
+ if __name__ == "__main__":
+     import argparse
+     p = argparse.ArgumentParser(description="Ari’el server")
+     p.add_argument("--host", default=os.getenv("ARIEL_HOST", "127.0.0.1"))
+     p.add_argument("--port", type=int, default=int(os.getenv("ARIEL_PORT", "8000")))
+     args = p.parse_args()
+ 
+-    # Optionally try to bring up the local LLM in the background (non-fatal)
+-    try:
+-        start_llm()
+-    except Exception as e:
+-        print(f"[LLM] start_llm error (ignored): {e}")
++    # Optionally try to bring up the local LLM in the background (non-fatal).
++    # Now OPT-IN via ARIEL_AUTOSTART_OLLAMA=1 to avoid noisy port 11434 warnings.
++    try:
++        _autostart = (os.getenv("ARIEL_AUTOSTART_OLLAMA", "0") or "").lower().strip()
++        if _autostart in ("1", "true", "yes", "y"):
++            start_llm()
++        else:
++            print("[LLM] Autostart disabled (set ARIEL_AUTOSTART_OLLAMA=1 to enable).")
++    except Exception as e:
++        print(f"[LLM] start_llm error (ignored): {e}")
+*** End Patch
